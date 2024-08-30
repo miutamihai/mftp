@@ -7,10 +7,45 @@ import (
 	"slices"
 )
 
-func main() {
-	var buffer bytes.Buffer
+type LoggerInput interface {
+	getBuffer() *bytes.Buffer
+	getPrefix() string
+}
 
-	logger := log.New(&buffer, "mftp: ", log.LstdFlags)
+func makeLogger(input LoggerInput) log.Logger {
+	buffer := input.getBuffer()
+	prefix := input.getPrefix()
+
+	return *log.New(buffer, prefix, log.LstdFlags)
+}
+
+type Input struct {
+	buffer *bytes.Buffer
+}
+
+func (input *Input) getBuffer() *bytes.Buffer {
+	if input.buffer == nil {
+		var buffer bytes.Buffer
+
+		input.buffer = &buffer
+	}
+
+	return input.buffer
+}
+
+func (_ Input) getPrefix() string {
+	return ""
+}
+
+func makeInput() *Input {
+	input := Input{}
+
+	return &input
+}
+
+func main() {
+	input := makeInput()
+	logger := makeLogger(input)
 
 	names := []string{"mihai", "samy"}
 
@@ -19,5 +54,5 @@ func main() {
 	}
 
 	fmt.Println("Buffer")
-	fmt.Printf("%s\n", &buffer)
+	fmt.Printf("%s\n", input.buffer)
 }
