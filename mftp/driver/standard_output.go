@@ -1,34 +1,59 @@
 package driver
 
 import (
-	"bytes"
+	"context"
 	"fmt"
-	"log"
+	"strconv"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type StandardOutputDriver struct {
-	buffer         *bytes.Buffer
-	loggerInstance *log.Logger
+	currentContext context.Context
+	logs           []Log
 }
 
-func (driver *StandardOutputDriver) Initialize() {
-	driver.buffer = &bytes.Buffer{}
-	driver.loggerInstance = log.New(driver.buffer, "", log.Ldate|log.Ltime|log.LUTC)
+func (driver *StandardOutputDriver) Initialize(parentContext context.Context) {
+	driver.currentContext = context.WithValue(parentContext, "trace_id", uuid.New().String())
 }
 
 func (driver *StandardOutputDriver) Write() error {
-	fmt.Printf("%s\n", driver.buffer)
-	driver.buffer.Reset()
+	for _, log := range driver.logs {
+		var colorCode int
+
+		switch log.Level {
+		case Debug:
+			colorCode = 96
+		case Error:
+			colorCode = 91
+		default:
+			panic(fmt.Sprintf("unexpected driver.LogLevel: %#v", log.Level))
+		}
+
+		message := fmt.Sprintf("[Level=%s][Timestamp=%s][TraceID=%s]: %s\n", log.Level, log.Timestamp.String(), log.TraceId, log.Message)
+
+		fmt.Printf("\033[%sm%s\x1b[0m", strconv.Itoa(colorCode), message)
+	}
+
+	driver.logs = []Log{}
 
 	return nil
 }
 
-func (driver *StandardOutputDriver) Log(values ...any) {
-	driver.loggerInstance.Print(values...)
+func (driver *StandardOutputDriver) Log(level LogLevel, message string) {
+	driver.logs = append(driver.logs, Log{
+		Timestamp: time.Now(),
+		TraceId:   driver.currentContext.Value("trace_id").(string),
+		Level:     level,
+		Message:   message,
+	})
 
-	driver.Write()
+	if len(driver.logs) >= log_limit {
+		driver.Write()
+	}
 }
 
 func (driver *StandardOutputDriver) IsInitialized() bool {
-	return driver.buffer != nil && driver.loggerInstance != nil
+	return driver.currentContext != nil
 }

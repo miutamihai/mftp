@@ -1,18 +1,20 @@
 package main
 
 import (
+	"context"
 	"mihaimiuta/mftp/driver"
+	"strconv"
 	"time"
 )
 
-func doWork(driver driver.Driver) {
-	if !driver.IsInitialized() {
-		driver.Initialize()
+func doWork(driverInstance driver.Driver) {
+	if !driverInstance.IsInitialized() {
+		driverInstance.Initialize(context.Background())
 	}
 
-	for _number := range 10_000 {
-		driver.Log("something")
-		driver.Log(_number)
+	for number := range 10_000 {
+		driverInstance.Log(driver.Debug, "something")
+		driverInstance.Log(driver.Debug, strconv.Itoa(number))
 
 		time.Sleep(2 * time.Second)
 	}
@@ -20,7 +22,7 @@ func doWork(driver driver.Driver) {
 
 func main() {
 	driver := driver.StandardOutputDriver{}
-	driver.Initialize()
+	driver.Initialize(context.Background())
 
 	doWork(&driver)
 }
