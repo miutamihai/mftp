@@ -13,7 +13,7 @@ type StandardOutputDriver struct {
 
 func (driver *StandardOutputDriver) Initialize() {
 	driver.buffer = &bytes.Buffer{}
-	driver.loggerInstance = log.New(driver.buffer, "", log.LstdFlags)
+	driver.loggerInstance = log.New(driver.buffer, "", log.Ldate|log.Ltime|log.LUTC)
 }
 
 func (driver *StandardOutputDriver) Write() error {
