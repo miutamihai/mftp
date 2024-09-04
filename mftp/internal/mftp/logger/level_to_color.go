@@ -2,8 +2,8 @@ package logger
 
 import (
 	"fmt"
-	"mihaimiuta/mftp/ansi"
-	"mihaimiuta/mftp/types"
+	"mihaimiuta/mftp/internal/mftp/ansi"
+	"mihaimiuta/mftp/pkg/mftp/types"
 )
 
 func logLevelToColor(level types.LogLevel) ansi.Color {

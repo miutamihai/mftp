@@ -3,7 +3,7 @@ package driver
 import (
 	"errors"
 	"io/fs"
-	"mihaimiuta/mftp/types"
+	"mihaimiuta/mftp/pkg/mftp/types"
 	"os"
 )
 

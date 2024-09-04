@@ -2,7 +2,7 @@ package driver
 
 import (
 	"fmt"
-	"mihaimiuta/mftp/types"
+	"mihaimiuta/mftp/pkg/mftp/types"
 )
 
 type StandardOutputDriver struct {

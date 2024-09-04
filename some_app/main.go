@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
-	"mihaimiuta/mftp/driver"
-	"mihaimiuta/mftp/logger"
-	"mihaimiuta/mftp/types"
+	"mihaimiuta/mftp/pkg/mftp"
+	"mihaimiuta/mftp/pkg/mftp/driver"
+	"mihaimiuta/mftp/pkg/mftp/types"
 	"strconv"
 	"time"
 )
 
-func doWork(loggerInstance logger.Logger) {
+func doWork(loggerInstance mftp.Logger) {
 	if !loggerInstance.IsInitialized() {
 		loggerInstance.Initialize(context.Background(), &driver.StandardOutputDriver{})
 	}
@@ -48,7 +48,7 @@ func doWork(loggerInstance logger.Logger) {
 }
 
 func main() {
-	loggerInstance := logger.Logger{}
+	loggerInstance := mftp.Logger{}
 
 	go func() {
 		loggerInstance.Initialize(context.Background(), &driver.StandardOutputDriver{})

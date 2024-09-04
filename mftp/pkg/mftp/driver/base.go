@@ -1,8 +1,6 @@
 package driver
 
-import (
-	"mihaimiuta/mftp/types"
-)
+import "mihaimiuta/mftp/pkg/mftp/types"
 
 type LogEncoder func(types.Log) string
 

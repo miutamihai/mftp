@@ -3,12 +3,12 @@ package logger
 import (
 	"fmt"
 	"maps"
-	"mihaimiuta/mftp/ansi"
-	"mihaimiuta/mftp/types"
+	"mihaimiuta/mftp/internal/mftp/ansi"
+	"mihaimiuta/mftp/pkg/mftp/types"
 	"strings"
 )
 
-func makeLogEncoder(shouldUseColors bool) func(types.Log) string {
+func MakeLogEncoder(shouldUseColors bool) func(types.Log) string {
 	return func(log types.Log) string {
 		var builder strings.Builder
 
