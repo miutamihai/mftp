@@ -32,7 +32,7 @@ func (logger *Logger) WithContext(newParentContext context.Context) {
 	logger.currentContext = context.WithValue(newParentContext, "trace_id", uuid.New().String())
 }
 
-func (logger *Logger) Log(level types.LogLevel, message string) {
+func (logger *Logger) Log(level types.LogLevel, message string) error {
 	if !logger.IsInitialized() {
 		panic("Tried to use uninitialized logger")
 	}
@@ -47,7 +47,7 @@ func (logger *Logger) Log(level types.LogLevel, message string) {
 	if len(logger.logs) >= (*logger.driverInstance).GetBufferSize() {
 		shouldUseColors := (*logger.driverInstance).SupportsANSIColors()
 
-		(*logger.driverInstance).Write(logger.logs, func(log types.Log) string {
+		err := (*logger.driverInstance).Write(logger.logs, func(log types.Log) string {
 			message := fmt.Sprintf("[Level=%s][Timestamp=%s][TraceID=%s]: %s\n", log.Level, log.Timestamp.String(), log.TraceId, log.Message)
 
 			if shouldUseColors {
@@ -56,7 +56,14 @@ func (logger *Logger) Log(level types.LogLevel, message string) {
 
 			return message
 		})
+
+		if err != nil {
+			return err
+		}
+
 	}
+
+	return nil
 }
 
 func (logger *Logger) IsInitialized() bool {
