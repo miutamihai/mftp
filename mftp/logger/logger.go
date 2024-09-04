@@ -2,10 +2,8 @@ package logger
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"mihaimiuta/mftp/ansi"
 	"mihaimiuta/mftp/driver"
 	"mihaimiuta/mftp/types"
 
@@ -32,30 +30,25 @@ func (logger *Logger) WithContext(newParentContext context.Context) {
 	logger.currentContext = context.WithValue(newParentContext, "trace_id", uuid.New().String())
 }
 
-func (logger *Logger) Log(level types.LogLevel, message string) error {
+func (logger *Logger) Log(level types.LogLevel, message string, attributes map[string]string) error {
 	if !logger.IsInitialized() {
 		panic("Tried to use uninitialized logger")
 	}
 
-	logger.logs = append(logger.logs, types.Log{
-		Timestamp: time.Now(),
-		TraceId:   logger.currentContext.Value("trace_id").(string),
-		Level:     level,
-		Message:   message,
-	})
+	log := types.Log{
+		Timestamp:  time.Now(),
+		TraceId:    logger.currentContext.Value("trace_id").(string),
+		Level:      level,
+		Message:    message,
+		Attributes: attributes,
+	}
+
+	logger.logs = append(logger.logs, log)
 
 	if len(logger.logs) >= (*logger.driverInstance).GetBufferSize() {
 		shouldUseColors := (*logger.driverInstance).SupportsANSIColors()
 
-		err := (*logger.driverInstance).Write(logger.logs, func(log types.Log) string {
-			message := fmt.Sprintf("[Level=%s][Timestamp=%s][TraceID=%s]: %s\n", log.Level, log.Timestamp.String(), log.TraceId, log.Message)
-
-			if shouldUseColors {
-				return ansi.ColorMessage(message, logLevelToColor(log.Level))
-			}
-
-			return message
-		})
+		err := (*logger.driverInstance).Write(logger.logs, makeLogEncoder(shouldUseColors))
 
 		if err != nil {
 			return err

@@ -15,32 +15,28 @@ func doWork(loggerInstance logger.Logger) {
 	}
 
 	for number := range 10_000 {
-		err := loggerInstance.Log(types.Info, "doing some work")
+		err := loggerInstance.Log(types.Info, "doing some work", nil)
 
 		if err != nil {
 			panic(err)
 		}
 
 		if number%3 == 0 {
-			err := loggerInstance.Log(types.Error, "something went wrong")
+			err := loggerInstance.Log(types.Error, "something went wrong", map[string]string{
+				"error": "number was multiple of 3",
+			})
 
 			if err != nil {
 				panic(err)
-			}
-
-			err2 := loggerInstance.Log(types.Error, strconv.Itoa(number))
-
-			if err2 != nil {
-				panic(err2)
 			}
 		} else {
-			err := loggerInstance.Log(types.Debug, "something went right")
+			err := loggerInstance.Log(types.Debug, "something went right", nil)
 
 			if err != nil {
 				panic(err)
 			}
 
-			err2 := loggerInstance.Log(types.Debug, strconv.Itoa(number))
+			err2 := loggerInstance.Log(types.Debug, strconv.Itoa(number), nil)
 
 			if err2 != nil {
 				panic(err2)

@@ -11,8 +11,9 @@ const (
 )
 
 type Log struct {
-	Timestamp time.Time
-	TraceId   string
-	Level     LogLevel
-	Message   string
+	Timestamp  time.Time
+	TraceId    string
+	Level      LogLevel
+	Message    string
+	Attributes map[string]string
 }
