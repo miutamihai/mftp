@@ -10,7 +10,7 @@ type StandardOutputDriver struct {
 
 func (driver *StandardOutputDriver) Write(logs []types.Log, encodeLog LogEncoder) error {
 	for _, log := range logs {
-		fmt.Printf("%s\n", encodeLog(log))
+		fmt.Print(encodeLog(log))
 	}
 
 	return nil

@@ -25,7 +25,7 @@ func MakeLogEncoder(shouldUseColors bool) func(types.Log) string {
 
 			fmt.Fprint(&builder, "}]")
 		}
-		fmt.Fprintf(&builder, " %s", log.Message)
+		fmt.Fprintf(&builder, " %s\n", log.Message)
 
 		message := builder.String()
 
