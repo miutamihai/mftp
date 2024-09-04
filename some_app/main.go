@@ -4,7 +4,6 @@ import (
 	"context"
 	"mihaimiuta/mftp/pkg/mftp"
 	"mihaimiuta/mftp/pkg/mftp/driver"
-	"mihaimiuta/mftp/pkg/mftp/types"
 	"strconv"
 	"time"
 )
@@ -15,14 +14,14 @@ func doWork(loggerInstance mftp.Logger) {
 	}
 
 	for number := range 10_000 {
-		err := loggerInstance.Log(types.Info, "doing some work", nil)
+		err := loggerInstance.Info("doing some work", nil)
 
 		if err != nil {
 			panic(err)
 		}
 
 		if number%3 == 0 {
-			err := loggerInstance.Log(types.Error, "something went wrong", map[string]string{
+			err := loggerInstance.Error("something went wrong", map[string]string{
 				"error": "number was multiple of 3",
 			})
 
@@ -30,13 +29,13 @@ func doWork(loggerInstance mftp.Logger) {
 				panic(err)
 			}
 		} else {
-			err := loggerInstance.Log(types.Debug, "something went right", nil)
+			err := loggerInstance.Debug("something went right", nil)
 
 			if err != nil {
 				panic(err)
 			}
 
-			err2 := loggerInstance.Log(types.Debug, strconv.Itoa(number), nil)
+			err2 := loggerInstance.Debug(strconv.Itoa(number), nil)
 
 			if err2 != nil {
 				panic(err2)

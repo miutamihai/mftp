@@ -30,6 +30,18 @@ func (loggerInstance *Logger) WithContext(newParentContext context.Context) {
 	loggerInstance.currentContext = context.WithValue(newParentContext, "trace_id", uuid.New().String())
 }
 
+func (loggerInstance *Logger) Info(message string, attributes map[string]string) error {
+	return loggerInstance.Log(types.Info, message, attributes)
+}
+
+func (loggerInstance *Logger) Error(message string, attributes map[string]string) error {
+	return loggerInstance.Log(types.Error, message, attributes)
+}
+
+func (loggerInstance *Logger) Debug(message string, attributes map[string]string) error {
+	return loggerInstance.Log(types.Debug, message, attributes)
+}
+
 func (loggerInstance *Logger) Log(level types.LogLevel, message string, attributes map[string]string) error {
 	if !loggerInstance.IsInitialized() {
 		panic("Tried to use uninitialized logger")
