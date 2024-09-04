@@ -1,29 +1,13 @@
 package driver
 
 import (
-	"context"
-	"time"
+	"mihaimiuta/mftp/types"
 )
+
+type LogEncoder func(types.Log) string
 
 type Driver interface {
-	Write() error
-	Initialize(context.Context)
-	IsInitialized() bool
-	Log(level LogLevel, message string)
+	Write(logs []types.Log, encodeLog LogEncoder) error
+	SupportsANSIColors() bool
+	GetBufferSize() int
 }
-
-type LogLevel string
-
-const (
-	Debug LogLevel = "debug"
-	Error LogLevel = "error"
-)
-
-type Log struct {
-	Timestamp time.Time
-	TraceId   string
-	Level     LogLevel
-	Message   string
-}
-
-const log_limit = 1
