@@ -8,9 +8,17 @@ import (
 	"time"
 )
 
+func getInput(driverInstance driver.Driver) mftp.InitializationInput {
+	return mftp.InitializationInput{
+		ParentContext:  context.Background(),
+		DriverInstance: driverInstance,
+		ConfigPath:     "./config.json",
+	}
+}
+
 func doWork(loggerInstance mftp.Logger) {
 	if !loggerInstance.IsInitialized() {
-		err := loggerInstance.Initialize(context.Background(), &driver.StandardOutputDriver{}, "./config.json")
+		err := loggerInstance.Initialize(getInput(&driver.StandardOutputDriver{}))
 
 		if err != nil {
 			panic(err)
@@ -54,7 +62,7 @@ func main() {
 	loggerInstance := mftp.Logger{}
 
 	go func() {
-		err := loggerInstance.Initialize(context.Background(), &driver.StandardOutputDriver{}, "./config.json")
+		err := loggerInstance.Initialize(getInput(&driver.StandardOutputDriver{}))
 
 		if err != nil {
 			panic(err)
@@ -63,9 +71,9 @@ func main() {
 		doWork(loggerInstance)
 	}()
 
-	err := loggerInstance.Initialize(context.Background(), &driver.TextFileDriver{
+	err := loggerInstance.Initialize(getInput(&driver.TextFileDriver{
 		FilePath: "./log.txt",
-	}, "./config.json")
+	}))
 
 	if err != nil {
 		panic(err)

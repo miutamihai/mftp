@@ -23,16 +23,16 @@ type InitializationInput struct {
 	ConfigPath     string
 }
 
-func (loggerInstance *Logger) Initialize(parentContext context.Context, driverInstance driver.Driver, configPath string) error {
-	config, err := readConfig(configPath)
+func (loggerInstance *Logger) Initialize(input InitializationInput) error {
+	config, err := readConfig(input.ConfigPath)
 
 	if err != nil {
 		return err
 	}
 
-	loggerInstance.currentContext = context.WithValue(parentContext, "trace_id", uuid.New().String())
+	loggerInstance.currentContext = context.WithValue(input.ParentContext, "trace_id", uuid.New().String())
 	loggerInstance.logs = []types.Log{}
-	loggerInstance.driverInstance = &driverInstance
+	loggerInstance.driverInstance = &input.DriverInstance
 	loggerInstance.config = config
 
 	return nil

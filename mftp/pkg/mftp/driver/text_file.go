@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"mihaimiuta/mftp/pkg/mftp/types"
 	"os"
+	"path/filepath"
 )
 
 type TextFileDriver struct {
@@ -12,11 +13,17 @@ type TextFileDriver struct {
 }
 
 func (driver *TextFileDriver) Write(logs []types.Log, encodeLog LogEncoder) error {
-	file, err := os.OpenFile(driver.FilePath, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	absolutePath, err := filepath.Abs(driver.FilePath)
+
+	if err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(absolutePath, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
-			file, err = os.Create(driver.FilePath)
+			file, err = os.Create(absolutePath)
 
 			if err != nil {
 				return err
