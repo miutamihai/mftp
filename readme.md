@@ -54,7 +54,7 @@ which `mftp` can then add to the different log levels for an easier reading
 of the logs
 * `GetBufferSize` - determines the driver's preferred buffer size (i.e. how
 many logs are in the `logs` list when `Write` is called).
-Can be overridden via the [Config file](<readme#Config file>).
+Can be overridden via the [Config file](<readme.md#Config file>).
 
 These drivers are already included:
 
@@ -69,7 +69,7 @@ config file. It should be a comma delimited list of the following values:
 * `LEVEL` - the log level (info, error or debug)
 * `TIMESTAMP` - the current timestamp
 * `TRACE_ID` - the current trace id (see
-[Transaction Style logs](<readme#Transaction Style logs>)
+[Transaction Style logs](<readme.md#Transaction Style logs>))
 * `ATTRIBUTES` - a string map containing extra attributes
 
 ## Config file
