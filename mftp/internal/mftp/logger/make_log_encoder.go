@@ -20,7 +20,7 @@ func MakeLogEncoder(shouldUseColors bool) func(types.Log) string {
 			fmt.Fprint(&builder, "[Attributes={")
 
 			for key, value := range maps.All(log.Attributes) {
-				fmt.Fprintf(&builder, "[%s=%s],", key, value)
+				fmt.Fprintf(&builder, "[%s=%s]", key, value)
 			}
 
 			fmt.Fprint(&builder, "}]")

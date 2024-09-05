@@ -59,7 +59,7 @@ func TestMakeLogEncoder(t *testing.T) {
 					},
 				},
 			},
-			want: "[Level=info][Timestamp=1970-01-01 00:00:00 +0000 UTC][TraceID=traceId][Attributes={[key=value],}] message\n",
+			want: "[Level=info][Timestamp=1970-01-01 00:00:00 +0000 UTC][TraceID=traceId][Attributes={[key=value]}] message\n",
 		},
 	}
 	for _, tt := range tests {
