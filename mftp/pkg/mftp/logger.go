@@ -60,7 +60,7 @@ func (loggerInstance *Logger) Log(level types.LogLevel, message string, attribut
 	if len(loggerInstance.logs) >= (*loggerInstance.driverInstance).GetBufferSize() {
 		shouldUseColors := (*loggerInstance.driverInstance).SupportsANSIColors()
 
-		err := (*loggerInstance.driverInstance).Write(loggerInstance.logs, logger.MakeLogEncoder(shouldUseColors))
+		err := (*loggerInstance.driverInstance).Write(loggerInstance.logs, logger.MakeLogEncoder(shouldUseColors, ""))
 
 		if err != nil {
 			return err

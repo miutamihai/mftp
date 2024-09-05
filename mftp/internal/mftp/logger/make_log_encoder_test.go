@@ -10,6 +10,7 @@ import (
 func TestMakeLogEncoder(t *testing.T) {
 	type args struct {
 		shouldUseColors bool
+		format          string
 		log             types.Log
 	}
 	tests := []struct {
@@ -21,6 +22,7 @@ func TestMakeLogEncoder(t *testing.T) {
 			name: "Without Colors",
 			args: args{
 				shouldUseColors: false,
+				format:          "",
 				log: types.Log{
 					Message:    "message",
 					Timestamp:  time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -35,6 +37,7 @@ func TestMakeLogEncoder(t *testing.T) {
 			name: "With Colors Info",
 			args: args{
 				shouldUseColors: true,
+				format:          "",
 				log: types.Log{
 					Message:    "message",
 					Timestamp:  time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -49,6 +52,7 @@ func TestMakeLogEncoder(t *testing.T) {
 			name: "With Attributes",
 			args: args{
 				shouldUseColors: false,
+				format:          "",
 				log: types.Log{
 					Message:   "message",
 					Timestamp: time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -64,7 +68,7 @@ func TestMakeLogEncoder(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MakeLogEncoder(tt.args.shouldUseColors)(tt.args.log); !reflect.DeepEqual(got, tt.want) {
+			if got := MakeLogEncoder(tt.args.shouldUseColors, tt.args.format)(tt.args.log); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MakeLogEncoder() = %v, want %v", got, tt.want)
 			}
 		})
