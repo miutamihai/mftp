@@ -14,12 +14,28 @@ type Logger struct {
 	currentContext context.Context
 	logs           []types.Log
 	driverInstance *driver.Driver
+	config         types.Config
 }
 
-func (loggerInstance *Logger) Initialize(parentContext context.Context, driverInstance driver.Driver) {
+type InitializationInput struct {
+	ParentContext  context.Context
+	DriverInstance driver.Driver
+	ConfigPath     string
+}
+
+func (loggerInstance *Logger) Initialize(parentContext context.Context, driverInstance driver.Driver, configPath string) error {
+	config, err := readConfig(configPath)
+
+	if err != nil {
+		return err
+	}
+
 	loggerInstance.currentContext = context.WithValue(parentContext, "trace_id", uuid.New().String())
 	loggerInstance.logs = []types.Log{}
 	loggerInstance.driverInstance = &driverInstance
+	loggerInstance.config = config
+
+	return nil
 }
 
 func (loggerInstance *Logger) WithContext(newParentContext context.Context) {
@@ -57,10 +73,16 @@ func (loggerInstance *Logger) Log(level types.LogLevel, message string, attribut
 
 	loggerInstance.logs = append(loggerInstance.logs, log)
 
-	if len(loggerInstance.logs) >= (*loggerInstance.driverInstance).GetBufferSize() {
+	bufferSize := (*loggerInstance.driverInstance).GetBufferSize()
+
+	if loggerInstance.config.Driver != nil {
+		bufferSize = loggerInstance.config.Driver.OverrideBufferSize
+	}
+
+	if len(loggerInstance.logs) >= bufferSize {
 		shouldUseColors := (*loggerInstance.driverInstance).SupportsANSIColors()
 
-		err := (*loggerInstance.driverInstance).Write(loggerInstance.logs, logger.MakeLogEncoder(shouldUseColors, ""))
+		err := (*loggerInstance.driverInstance).Write(loggerInstance.logs, logger.MakeLogEncoder(shouldUseColors, loggerInstance.config.LogFormat))
 
 		if err != nil {
 			return err

@@ -14,7 +14,7 @@ func encodeWithFormat(format string, log types.Log) string {
 	var builder strings.Builder
 
 	for _, word := range strings.Split(format, ",") {
-		switch word {
+		switch strings.TrimSpace(word) {
 		case "LEVEL":
 			fmt.Fprintf(&builder, "[Level=%s]", log.Level)
 		case "TIMESTAMP":

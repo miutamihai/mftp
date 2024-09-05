@@ -65,6 +65,21 @@ func TestMakeLogEncoder(t *testing.T) {
 			},
 			want: "[Level=info][Timestamp=1970-01-01 00:00:00 +0000 UTC][TraceID=traceId][Attributes={[key=value]}] message\n",
 		},
+		{
+			name: "With Custom Format",
+			args: args{
+				shouldUseColors: false,
+				format:          "LEVEL,TRACE_ID",
+				log: types.Log{
+					Message:    "message",
+					Timestamp:  time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
+					TraceId:    "traceId",
+					Level:      types.Info,
+					Attributes: nil,
+				},
+			},
+			want: "[Level=info][TraceID=traceId] message\n",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

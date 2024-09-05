@@ -10,7 +10,11 @@ import (
 
 func doWork(loggerInstance mftp.Logger) {
 	if !loggerInstance.IsInitialized() {
-		loggerInstance.Initialize(context.Background(), &driver.StandardOutputDriver{})
+		err := loggerInstance.Initialize(context.Background(), &driver.StandardOutputDriver{}, "./config.json")
+
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	for number := range 10_000 {
@@ -50,14 +54,22 @@ func main() {
 	loggerInstance := mftp.Logger{}
 
 	go func() {
-		loggerInstance.Initialize(context.Background(), &driver.StandardOutputDriver{})
+		err := loggerInstance.Initialize(context.Background(), &driver.StandardOutputDriver{}, "./config.json")
+
+		if err != nil {
+			panic(err)
+		}
 
 		doWork(loggerInstance)
 	}()
 
-	loggerInstance.Initialize(context.Background(), &driver.TextFileDriver{
+	err := loggerInstance.Initialize(context.Background(), &driver.TextFileDriver{
 		FilePath: "./log.txt",
-	})
+	}, "./config.json")
+
+	if err != nil {
+		panic(err)
+	}
 
 	doWork(loggerInstance)
 }

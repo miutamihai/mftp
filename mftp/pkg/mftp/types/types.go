@@ -17,3 +17,10 @@ type Log struct {
 	Message    string
 	Attributes map[string]string
 }
+
+type Config struct {
+	LogFormat string `json:"log_format"`
+	Driver    *struct {
+		OverrideBufferSize int `json:"override_buffer_size"`
+	} `json:"driver"`
+}

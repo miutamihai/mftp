@@ -1,0 +1,6 @@
+{
+  "log_format": "LEVEL,TIMESTAMP,TRACE_ID,ATTRIBUTES",
+  "driver": {
+    "override_buffer_size": 1
+  }
+}
