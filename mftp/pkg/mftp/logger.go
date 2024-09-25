@@ -91,6 +91,7 @@ func (loggerInstance *Logger) Log(level types.LogLevel, message string, attribut
 			return err
 		}
 
+		loggerInstance.logs = []types.Log{}
 	}
 
 	return nil
