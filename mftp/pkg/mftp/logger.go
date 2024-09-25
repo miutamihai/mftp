@@ -2,6 +2,7 @@ package mftp
 
 import (
 	"context"
+	"errors"
 	"mihaimiuta/mftp/internal/mftp/logger"
 	"mihaimiuta/mftp/pkg/mftp/driver"
 	"mihaimiuta/mftp/pkg/mftp/types"
@@ -38,12 +39,14 @@ func (loggerInstance *Logger) Initialize(input InitializationInput) error {
 	return nil
 }
 
-func (loggerInstance *Logger) WithContext(newParentContext context.Context) {
+func (loggerInstance *Logger) WithContext(newParentContext context.Context) error {
 	if !loggerInstance.IsInitialized() {
-		panic("Tried to use uninitialized logger")
+		return errors.New("Tried to use uninitialized logger")
 	}
 
 	loggerInstance.currentContext = context.WithValue(newParentContext, "trace_id", uuid.New().String())
+
+	return nil
 }
 
 func (loggerInstance *Logger) Info(message string, attributes map[string]string) error {
@@ -60,7 +63,7 @@ func (loggerInstance *Logger) Debug(message string, attributes map[string]string
 
 func (loggerInstance *Logger) Log(level types.LogLevel, message string, attributes map[string]string) error {
 	if !loggerInstance.IsInitialized() {
-		panic("Tried to use uninitialized logger")
+		return errors.New("Tried to use uninitialized logger")
 	}
 
 	log := types.Log{
